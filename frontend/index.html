@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DocuMind AI - Intelligent Document Analysis</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="background-globes">
+        <div class="globe globe-1"></div>
+        <div class="globe globe-2"></div>
+        <div class="globe globe-3"></div>
+    </div>
+
+    <div id="app">
+        <!-- Auth Section -->
+        <section id="auth-section" class="view active">
+            <div class="glass-container auth-container">
+                <div class="logo">
+                    <i class="fa-solid fa-brain"></i>
+                    <h1>DocuMind AI</h1>
+                </div>
+
+                <!-- Login Form -->
+                <form id="login-form" class="auth-form">
+                    <h2>Welcome Back</h2>
+                    <p class="subtitle">Access your intelligent document workspace</p>
+                    <div class="input-group">
+                        <i class="fa-regular fa-user"></i>
+                        <input type="text" id="login-username" placeholder="Username" required>
+                    </div>
+                    <div class="input-group">
+                        <i class="fa-solid fa-lock"></i>
+                        <input type="password" id="login-password" placeholder="Password" required>
+                    </div>
+                    <button type="submit" class="btn-primary">Sign In</button>
+                    <p class="switch-auth">Don't have an account? <span onclick="switchAuth('register')">Sign Up</span>
+                    </p>
+                </form>
+
+                <!-- Register Form -->
+                <form id="register-form" class="auth-form hidden">
+                    <h2>Create Account</h2>
+                    <p class="subtitle">Start analyzing documents with AI</p>
+                    <div class="input-group">
+                        <i class="fa-regular fa-user"></i>
+                        <input type="text" id="reg-username" placeholder="Username" required>
+                    </div>
+                    <div class="input-group">
+                        <i class="fa-solid fa-lock"></i>
+                        <input type="password" id="reg-password" placeholder="Password" required>
+                    </div>
+                    <button type="submit" class="btn-primary">Create Account</button>
+                    <p class="switch-auth">Already have an account? <span onclick="switchAuth('login')">Sign In</span>
+                    </p>
+                </form>
+            </div>
+        </section>
+
+        <!-- Dashboard Section -->
+        <section id="dashboard-section" class="view hidden">
+            <nav class="sidebar glass-panel">
+                <div class="logo-small">
+                    <i class="fa-solid fa-brain"></i>
+                    <span>DocuMind</span>
+                </div>
+                <ul class="nav-links">
+                    <li class="active" onclick="switchTab('upload')"><i class="fa-solid fa-cloud-arrow-up"></i> Upload
+                    </li>
+                    <li onclick="switchTab('chat')"><i class="fa-regular fa-comments"></i> Chat</li>
+                    <li onclick="switchTab('quiz')"><i class="fa-solid fa-graduation-cap"></i> Quiz</li>
+                    <li onclick="switchTab('summary')"><i class="fa-regular fa-file-lines"></i> Summary</li>
+                </ul>
+                <div class="user-profile">
+                    <div class="avatar"><i class="fa-solid fa-user"></i></div>
+                    <span id="username-display">User</span>
+                    <button onclick="logout()" class="btn-icon"><i
+                            class="fa-solid fa-right-from-bracket"></i></button>
+                </div>
+            </nav>
+
+            <main class="content-area">
+                <!-- Upload Tab -->
+                <div id="upload-tab" class="tab-content active">
+                    <div class="glass-card upload-card">
+                        <h2>Upload Document</h2>
+                        <p>Supported formats: Any text-based file (PDF, DOCX, MD, PY, etc.)</p>
+                        <div class="drop-zone" id="drop-zone">
+                            <i class="fa-solid fa-cloud-arrow-up"></i>
+                            <p>Drag & Drop files here or click to browse</p>
+                            <input type="file" id="file-input" hidden>
+                        </div>
+                        <div id="upload-status" class="status-msg"></div>
+
+                        <div id="recent-docs" class="mt-4">
+                            <h3>Active Document</h3>
+                            <div id="active-doc-card" class="doc-card hidden">
+                                <i class="fa-solid fa-file-pdf"></i>
+                                <span id="active-filename">filename.pdf</span>
+                                <span class="badge">Ready</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Chat Tab -->
+                <div id="chat-tab" class="tab-content hidden">
+                    <div class="chat-container glass-card">
+                        <div class="chat-header">
+                            <h3>Document Assistant</h3>
+                            <span id="chat-doc-name" class="subtitle-small">No document selected</span>
+                        </div>
+                        <div class="chat-messages" id="chat-messages">
+                            <!-- Messages will appear here -->
+                            <div class="message system">
+                                <p>Hello! Upload a document to start asking questions.</p>
+                            </div>
+                        </div>
+                        <div class="chat-input-area">
+                            <input type="text" id="chat-input" placeholder="Ask a question about your document...">
+                            <button onclick="sendChat()" class="btn-icon-primary"><i
+                                    class="fa-solid fa-paper-plane"></i></button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quiz Tab -->
+                <div id="quiz-tab" class="tab-content hidden">
+                    <div class="glass-card quiz-setup-card">
+                        <h2>Generate Quiz</h2>
+                        <div class="form-group">
+                            <label>Number of Questions</label>
+                            <input type="range" id="quiz-count" min="1" max="20" value="5"
+                                oninput="document.getElementById('q-val').innerText = this.value">
+                            <span id="q-val">5</span>
+                        </div>
+                        <div class="form-group">
+                            <label>Type</label>
+                            <select id="quiz-type" class="glass-select">
+                                <option value="multiple_choice">Multiple Choice</option>
+                                <option value="open_ended">Open Ended</option>
+                            </select>
+                        </div>
+                        <button onclick="generateQuiz()" class="btn-primary">Generate Quiz</button>
+                    </div>
+
+                    <div id="quiz-results" class="quiz-results hidden">
+                        <!-- Quiz questions rendered here -->
+                    </div>
+                </div>
+
+                <!-- Summary Tab -->
+                <div id="summary-tab" class="tab-content hidden">
+                    <div class="glass-card summary-card">
+                        <div class="summary-header">
+                            <h2>Document Summary</h2>
+                            <div class="summary-controls">
+                                <button onclick="generateSummary('short', this)" class="btn-outline">Short</button>
+                                <button onclick="generateSummary('medium', this)"
+                                    class="btn-outline active">Medium</button>
+                                <button onclick="generateSummary('long', this)" class="btn-outline">Long</button>
+                            </div>
+                        </div>
+                        <div id="summary-content" class="content-box">
+                            <p class="placeholder-text">Select a length to generate a summary of your active document.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </section>
+    </div>
+
+    <!-- Notification Toast -->
+    <div id="toast" class="toast hidden">Action Successful</div>
+
+    <script src="script.js"></script>
+</body>
+
+</html>
